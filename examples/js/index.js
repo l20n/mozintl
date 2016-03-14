@@ -25,9 +25,28 @@ const listFormatValues = [
   {type: 'number', style: 'long', value: ['23', '15', '51']},
 ];
 
+const pluralRulesValues = [
+  {type: 'cardinal', value: 0},
+  {type: 'cardinal', value: 1},
+  {type: 'cardinal', value: 3},
+  {type: 'cardinal', value: 5},
+  {type: 'cardinal', value: 23},
+  {type: 'cardinal', value: "1.5"},
+  {type: 'cardinal', locale: 'pl', value: 0},
+  {type: 'cardinal', locale: 'pl', value: 1},
+  {type: 'cardinal', locale: 'pl', value: 3},
+  {type: 'cardinal', locale: 'pl', value: 5},
+  {type: 'cardinal', locale: 'pl', value: 23},
+  {type: 'cardinal', locale: 'pl', value: "1.5"},
+  {type: 'cardinal', locale: 'fr', value: "1.5"},
+  {type: 'cardinal', locale: 'fr', value: "2.0"},
+  {type: 'ordinal', locale: 'pl', value: "5"},
+  {type: 'range', locale: 'pl', value: [2, 5]},
+];
+
 
 function displayListFormatValues() {
-  const root = document.getElementById('examples_body');
+  const root = document.getElementById('listformat_examples_body');
 
   listFormatValues.forEach(val => {
     let tr = document.createElement('tr');
@@ -59,4 +78,36 @@ function displayListFormatValues() {
   });
 }
 
+function displayPluralRulesValues() {
+  const root = document.getElementById('pluralrules_examples_body');
+
+  pluralRulesValues.forEach(val => {
+    var plural = new mozIntl.PluralRules(val.locale || navigator.languages, {
+      type: val.type
+    });
+
+    let tr = document.createElement('tr');
+
+    let td = document.createElement('td');
+    td.textContent = val.type;
+    tr.appendChild(td);
+
+    td = document.createElement('td');
+    td.textContent = plural.resolvedOptions().locale;
+    tr.appendChild(td);
+
+    td = document.createElement('td');
+    td.textContent = val.value;
+    tr.appendChild(td);
+
+
+    td = document.createElement('td');
+    td.textContent = plural.select(val.value);
+    tr.appendChild(td);
+
+    root.appendChild(tr);
+  });
+}
+
 displayListFormatValues();
+displayPluralRulesValues();
