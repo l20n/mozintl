@@ -77,6 +77,16 @@ const testValues = [
       {minUnit: 'millisecond', maxUnit: 'hour', value: 534141413},
     ]
   },
+  {
+    name: 'RelativeTimeFormat',
+    formatter: mozIntl.RelativeTimeFormat,
+    testMethod: 'format',
+    params: ['unit', 'style'],
+    values: [
+      {unit: 'hour', style: 'long', value: Date.now() - 1000 * 60 * 60 * 4},
+      {unit: 'minute', style: 'long', value: Date.now() + 1000 * 60 * 2},
+    ]
+  },
 ];
 
 function displayExampleValues() {
