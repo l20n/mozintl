@@ -1,4 +1,20 @@
 
+function injectParts(parts, elem) {
+  if (Array.isArray(elem)) {
+    parts.push(...elem);
+  } else {
+    parts.push({type: 'element', value: elem});
+  }
+}
+
+function pushParts(parts, list, pattern) {
+  if (list.length > 2) {
+    parts.push(...constructParts(list.slice(1), pattern));
+  } else {
+    injectParts(parts, list[1]);
+  }
+}
+
 function constructParts(list, pattern) {
   let parts = [];
 
@@ -10,49 +26,25 @@ function constructParts(list, pattern) {
 
   let ltr = pattern.indexOf('{0}') < pattern.indexOf('{1}');
 
-  if (chunks[0]) {
-    parts.push({type: 'literal', value: chunks[0]});
-  }
-  if (ltr) {
-    if (Array.isArray(list[0])) {
-      parts.push(...list[0]);
-    } else {
-      parts.push({type: 'element', value: list[0]});
+  chunks.forEach((chunk, i) => {
+    if (chunk) {
+      parts.push({type: 'literal', value: chunk});
     }
-  } else {
-    if (list.length > 2) {
-      parts.push(...constructParts(list.slice(1), pattern));
-    } else {
-      if (Array.isArray(list[1])) {
-        parts.push(...list[1]);
+    if (i === 0) {
+      if (ltr) {
+        injectParts(parts, list[0]);
       } else {
-        parts.push({type: 'element', value: list[1]});
+        pushParts(parts, list, pattern);
+      }
+    } else if (i === 1) {
+      if (ltr) {
+        pushParts(parts, list, pattern);
+      } else {
+        injectParts(parts, list[0]);
       }
     }
-  }
-  if (chunks[1]) {
-    parts.push({type: 'literal', value: chunks[1]});
-  }
-  if (ltr) {
-    if (list.length > 2) {
-      parts = parts.concat(constructParts(list.slice(1), pattern));
-    } else {
-      if (Array.isArray(list[1])) {
-        parts.push(...list[1]);
-      } else {
-        parts.push({type: 'element', value: list[1]});
-      }
-    }
-  } else {
-    if (Array.isArray(list[0])) {
-      parts.push(...list[0]);
-    } else {
-      parts.push({type: 'element', value: list[0]});
-    }
-  }
-  if (chunks[2]) {
-    parts.push({type: 'literal', value: chunks[2]});
-  }
+  });
+
   return parts;
 }
 
