@@ -14,24 +14,24 @@ function getPluralRule(code, type) {
 }
 
 function getOperands(num) {
-  let stringValue = num.toString();
+  let sv = num.toString();
 
-  if (stringValue.startsWith('-')) {
-    stringValue = stringValue.substr(1);
+  if (sv.startsWith('-')) {
+    sv = sv.substr(1);
   }
 
-  const dp = stringValue.indexOf('.');
+  const dp = sv.indexOf('.');
 
   let iv, fv;
-  let n = parseFloat(stringValue),
+  let n = Number(sv),
     i = 0, v = 0, f = 0, t = 0, w = 0;
 
 
   if (dp === -1) {
-    iv = stringValue;
+    iv = sv;
   } else {
-    iv = stringValue.substr(0, dp);
-    fv = stringValue.substr(dp + 1);
+    iv = sv.substr(0, dp);
+    fv = sv.substr(dp + 1);
     f = parseInt(fv);
     v = fv.length;
   }
