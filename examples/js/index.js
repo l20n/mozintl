@@ -65,7 +65,18 @@ const testValues = [
       {value: 'Zh-NAN-haNS-bu-variant2-Variant1-u-ca-chinese-t-Zh-laTN-x-PRIVATE'},
       {value: ['dE-De', 'pL-pl', 'en-Fr'] }
     ],
-  }
+  },
+  {
+    name: 'DurationFormat',
+    formatter: mozIntl.DurationFormat,
+    testMethod: 'format',
+    params: ['minUnit', 'maxUnit'],
+    values: [
+      {minUnit: 'second', maxUnit: 'hour', value: 0},
+      {minUnit: 'second', maxUnit: 'hour', value: 534141413},
+      {minUnit: 'millisecond', maxUnit: 'hour', value: 534141413},
+    ]
+  },
 ];
 
 function displayExampleValues() {
