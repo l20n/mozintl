@@ -41,7 +41,6 @@ const pluralRulesValues = [
   {type: 'cardinal', locale: 'fr', value: "1.5"},
   {type: 'cardinal', locale: 'fr', value: "2.0"},
   {type: 'ordinal', locale: 'pl', value: "5"},
-  {type: 'range', locale: 'pl', value: [2, 5]},
 ];
 
 
