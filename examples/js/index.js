@@ -1,112 +1,142 @@
-const listFormatValues = [
-  {type: 'regular', style: 'long', value: ['Anna']},
-  {type: 'regular', style: 'long', value: ['Anna', 'John']},
-  {type: 'regular', style: 'long', value: ['Anna', 'John', 'Ian']},
-  {type: 'regular', style: 'long', value: ['Anna', 'John', 'Ian', 'Nick']},
+const testValues = [
+  {
+    name: 'ListFormat',
+    formatter: mozIntl.ListFormat,
+    testMethod: 'format',
+    params: ['type', 'style'],
+    values: [
+      {type: 'regular', style: 'long', value: ['Anna']},
+      {type: 'regular', style: 'long', value: ['Anna', 'John']},
+      {type: 'regular', style: 'long', value: ['Anna', 'John', 'Ian']},
+      {type: 'regular', style: 'long', value: ['Anna', 'John', 'Ian', 'Nick']},
 
-  {type: 'duration', style: 'long', value: ['Monday']},
-  {type: 'duration', style: 'long', value: ['Monday', 'Tuesday']},
-  {type: 'duration', style: 'long', value: ['Monday', 'Tuesday', 'Wednesday']},
+      {type: 'duration', style: 'long', value: ['Monday']},
+      {type: 'duration', style: 'long', value: ['Monday', 'Tuesday']},
+      {type: 'duration', style: 'long', value: ['Monday', 'Tuesday', 'Wednesday']},
 
-  {type: 'duration', style: 'short', value: ['Monday']},
-  {type: 'duration', style: 'short', value: ['Monday', 'Tuesday']},
-  {type: 'duration', style: 'short', value: ['Monday', 'Tuesday', 'Wednesday']},
+      {type: 'duration', style: 'short', value: ['Monday']},
+      {type: 'duration', style: 'short', value: ['Monday', 'Tuesday']},
+      {type: 'duration', style: 'short', value: ['Monday', 'Tuesday', 'Wednesday']},
 
-  {type: 'duration', style: 'narrow', value: ['Monday']},
-  {type: 'duration', style: 'narrow', value: ['Monday', 'Tuesday']},
-  {type: 'duration', style: 'narrow', value: ['Monday', 'Tuesday', 'Wednesday']},
+      {type: 'duration', style: 'narrow', value: ['Monday']},
+      {type: 'duration', style: 'narrow', value: ['Monday', 'Tuesday']},
+      {type: 'duration', style: 'narrow', value: ['Monday', 'Tuesday', 'Wednesday']},
 
-  {type: 'unit', style: 'long', value: ['2km']},
-  {type: 'unit', style: 'long', value: ['2km', '35m']},
-  {type: 'unit', style: 'long', value: ['2km', '35m', '15cm']},
+      {type: 'unit', style: 'long', value: ['2km']},
+      {type: 'unit', style: 'long', value: ['2km', '35m']},
+      {type: 'unit', style: 'long', value: ['2km', '35m', '15cm']},
 
-  {type: 'number', style: 'long', value: ['23']},
-  {type: 'number', style: 'long', value: ['23', '15']},
-  {type: 'number', style: 'long', value: ['23', '15', '51']},
+      {type: 'number', style: 'long', value: ['23']},
+      {type: 'number', style: 'long', value: ['23', '15']},
+      {type: 'number', style: 'long', value: ['23', '15', '51']},
+    ]
+  },
+  {
+    name: 'PluralRules',
+    formatter: mozIntl.PluralRules,
+    testMethod: 'select',
+    params: ['type'],
+    values: [
+      {type: 'cardinal', value: 0},
+      {type: 'cardinal', value: 1},
+      {type: 'cardinal', value: 3},
+      {type: 'cardinal', value: 5},
+      {type: 'cardinal', value: 23},
+      {type: 'cardinal', value: "1.5"},
+      {type: 'cardinal', locale: 'pl', value: 0},
+      {type: 'cardinal', locale: 'pl', value: 1},
+      {type: 'cardinal', locale: 'pl', value: 3},
+      {type: 'cardinal', locale: 'pl', value: 5},
+      {type: 'cardinal', locale: 'pl', value: 23},
+      {type: 'cardinal', locale: 'pl', value: "1.5"},
+      {type: 'cardinal', locale: 'fr', value: "1.5"},
+      {type: 'cardinal', locale: 'fr', value: "2.0"},
+      {type: 'ordinal', locale: 'pl', value: "5"},
+    ]
+  },
+  {
+    name: 'getCanonicalLocales',
+    testMethod: 'getCanonicalLocales',
+    params: [],
+    values: [
+      {value: 'en-us'},
+      {value: 'PL'},
+      {value: 'de-De-u-ast'},
+      {value: 'Zh-NAN-haNS-bu-variant2-Variant1-u-ca-chinese-t-Zh-laTN-x-PRIVATE'},
+      {value: ['dE-De', 'pL-pl', 'en-Fr'] }
+    ],
+  }
 ];
 
-const pluralRulesValues = [
-  {type: 'cardinal', value: 0},
-  {type: 'cardinal', value: 1},
-  {type: 'cardinal', value: 3},
-  {type: 'cardinal', value: 5},
-  {type: 'cardinal', value: 23},
-  {type: 'cardinal', value: "1.5"},
-  {type: 'cardinal', locale: 'pl', value: 0},
-  {type: 'cardinal', locale: 'pl', value: 1},
-  {type: 'cardinal', locale: 'pl', value: 3},
-  {type: 'cardinal', locale: 'pl', value: 5},
-  {type: 'cardinal', locale: 'pl', value: 23},
-  {type: 'cardinal', locale: 'pl', value: "1.5"},
-  {type: 'cardinal', locale: 'fr', value: "1.5"},
-  {type: 'cardinal', locale: 'fr', value: "2.0"},
-  {type: 'ordinal', locale: 'pl', value: "5"},
-];
+function displayExampleValues() {
+  testValues.forEach(bundle => {
+    let name = bundle.formatter ? bundle.name : bundle.testMethod;
 
+    const root = document.getElementById(`${name.toLowerCase()}_examples_table`);
 
-function displayListFormatValues() {
-  const root = document.getElementById('listformat_examples_body');
-
-  listFormatValues.forEach(val => {
-    let tr = document.createElement('tr');
-
-    let td = document.createElement('td');
-    td.textContent = val.type;
-    tr.appendChild(td);
-
-    td = document.createElement('td');
-    td.textContent = val.style;
-    tr.appendChild(td);
-
-    td = document.createElement('td');
-    td.textContent = val.value;
-    tr.appendChild(td);
-
-    var formatter = new mozIntl.ListFormat(navigator.languages, {
-      type: val.type,
-      style: val.style
-    });
-
-    td = document.createElement('td');
-    formatter.format(val.value).then(res => {
-      td.textContent = res;
-    });
-    tr.appendChild(td);
-
-    root.appendChild(tr);
-  });
-}
-
-function displayPluralRulesValues() {
-  const root = document.getElementById('pluralrules_examples_body');
-
-  pluralRulesValues.forEach(val => {
-    var plural = new mozIntl.PluralRules(val.locale || navigator.languages, {
-      type: val.type
-    });
+    const thead = root.querySelector('thead');
 
     let tr = document.createElement('tr');
 
-    let td = document.createElement('td');
-    td.textContent = val.type;
-    tr.appendChild(td);
+    let params = bundle.params.slice();
 
-    td = document.createElement('td');
-    td.textContent = plural.resolvedOptions().locale;
-    tr.appendChild(td);
+    if (bundle.formatter) {
+      params.push('locale');
+    }
 
-    td = document.createElement('td');
-    td.textContent = val.value;
-    tr.appendChild(td);
+    params.push('value', 'output');
 
+    params.forEach(param => {
 
-    td = document.createElement('td');
-    td.textContent = plural.select(val.value);
-    tr.appendChild(td);
+      let th = document.createElement('th');
+      th.textContent = param;
+      tr.appendChild(th);
+    });
 
-    root.appendChild(tr);
+    thead.appendChild(tr);
+
+    bundle.values.forEach(val => {
+      let tr = document.createElement('tr');
+
+      let locale = val.locale || 'en-US';
+
+      params.forEach(param => {
+        if (param === 'output') return;
+
+        let td = document.createElement('td');
+        if (param === 'locale') {
+          td.textContent = locale;
+        } else {
+          td.textContent = val[param];
+        }
+        tr.appendChild(td);
+      });
+
+      let options = {};
+
+      bundle.params.forEach(param => {
+        options[param] = val[param];
+      });
+
+      let obj = bundle.formatter ?
+        new bundle.formatter(locale, options) : mozIntl;
+
+      td = document.createElement('td');
+
+      var ret = obj[bundle.testMethod](val.value);
+
+      if (ret.then) {
+        ret.then(function(td, res) {
+          td.textContent = res;
+        }.bind(this, td));
+      } else {
+        td.textContent = ret;
+      }
+      tr.appendChild(td);
+
+      root.appendChild(tr);
+    });
   });
 }
 
-displayListFormatValues();
-displayPluralRulesValues();
+displayExampleValues();
