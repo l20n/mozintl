@@ -3,6 +3,7 @@ import { PluralRules } from './pluralrules';
 import { getCanonicalLocales } from './locale';
 import { DurationFormat } from './durationformat';
 import { RelativeTimeFormat } from './relativetimeformat';
+import { UnitFormat } from './unitformat';
 
 
 window.mozIntl = {
@@ -10,5 +11,6 @@ window.mozIntl = {
   PluralRules,
   DurationFormat,
   RelativeTimeFormat,
+  UnitFormat,
   getCanonicalLocales
 };

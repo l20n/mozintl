@@ -87,6 +87,18 @@ const testValues = [
       {unit: 'minute', style: 'long', value: Date.now() + 1000 * 60 * 2},
     ]
   },
+  {
+    name: 'UnitFormat',
+    formatter: mozIntl.UnitFormat,
+    testMethod: 'format',
+    params: ['unit', 'style'],
+    values: [
+      {unit: 'byte', style: 'short', value: 10},
+      {unit: 'month', style: 'narrow', value: 10},
+      {unit: 'gigabyte', style: 'short', value: 10},
+      {unit: 'hour', style: 'narrow', value: 10},
+    ]
+  },
 ];
 
 function displayExampleValues() {
