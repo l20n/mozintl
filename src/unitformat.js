@@ -1,3 +1,5 @@
+import { BaseFormat} from './baseformat';
+
 const unitFormatGroups = {
   'duration': {
     'units': ['second', 'minute', 'hour', 'day', 'month'],
@@ -20,15 +22,12 @@ function getUnitFormatGroupName(unitName) {
   return undefined;
 }
 
-export class UnitFormat {
-  constructor(locales = 'en-US', options = {}) {
-    const localeList = Array.isArray(locales) ? locales : [locales];
-
-    this._resolvedOptions = Object.assign({
-      locale: localeList[0],
+export class UnitFormat extends BaseFormat {
+  constructor(locales, options) {
+    super(locales, options, {
       unit: undefined,
       style: 'long'
-    }, options);
+    });
 
     const unitGroup = getUnitFormatGroupName(this._resolvedOptions.unit);
 
@@ -42,10 +41,6 @@ export class UnitFormat {
     }
 
     this._unit = `${unitGroup}-${options.unit}-${options.style}`;
-  }
-
-  resolvedOptions() {
-    return this._resolvedOptions;
   }
 
   format(x) {

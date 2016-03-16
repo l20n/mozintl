@@ -1,3 +1,4 @@
+import { BaseFormat} from './baseformat';
 
 function injectParts(parts, elem) {
   if (Array.isArray(elem)) {
@@ -103,19 +104,12 @@ function FormatToParts(type, style, list) {
   });
 }
 
-export class ListFormat {
-  constructor(locales = 'en-US', options = {}) {
-    const localeList = Array.isArray(locales) ? locales : [locales];
-
-    this._resolvedOptions = Object.assign({
-      locale: localeList[0],
+export class ListFormat extends BaseFormat {
+  constructor(locales, options) {
+    super(locales, options, {
       type: 'regular',
       style: 'long'
-    }, options);
-  }
-
-  resolvedOptions() {
-    return this._resolvedOptions;
+    });
   }
 
   format(list) {

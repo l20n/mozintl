@@ -1,3 +1,4 @@
+import { BaseFormat} from './baseformat';
 
 import { localeRules } from '../data/plural-rules';
 
@@ -52,18 +53,11 @@ function getOperands(num) {
   return {n, i, v, w, f, t};
 }
 
-export class PluralRules {
-  constructor(locales = 'en-US', options = {}) {
-    const localeList = Array.isArray(locales) ? locales : [locales];
-
-    this._resolvedOptions = Object.assign({
-      locale: localeList[0],
+export class PluralRules extends BaseFormat {
+  constructor(locales, options) {
+    super(locales, options, {
       type: 'cardinal',
-    }, options);
-  }
-
-  resolvedOptions() {
-    return this._resolvedOptions;
+    });
   }
 
   select(num) {

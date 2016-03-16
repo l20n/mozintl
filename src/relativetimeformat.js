@@ -1,3 +1,4 @@
+import { BaseFormat} from './baseformat';
 
 function computeTimeUnits(v) {
   const units = {};
@@ -52,19 +53,12 @@ function relativeTimeFormatId(x, options) {
   };
 }
 
-export class RelativeTimeFormat {
-  constructor(locales = 'en-US', options = {}) {
-    const localeList = Array.isArray(locales) ? locales : [locales];
-
-    this._resolvedOptions = Object.assign({
-      locale: localeList[0],
+export class RelativeTimeFormat extends BaseFormat {
+  constructor(locales, options) {
+    super(locales, options, {
       unit: 'bestFit',
       style: 'long'
-    }, options);
-  }
-
-  resolvedOptions() {
-    return this._resolvedOptions;
+    });
   }
 
   format(x) {

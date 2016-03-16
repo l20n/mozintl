@@ -1,3 +1,4 @@
+import { BaseFormat} from './baseformat';
 
 const durationFormatOrder = ['hour', 'minute', 'second', 'millisecond'];
 const durationFormatElements = {
@@ -54,15 +55,12 @@ function trimDurationPattern(string, maxUnit, minUnit) {
   return string;
 }
 
-export class DurationFormat {
-  constructor(locales = 'en-US', options = {}) {
-    const localeList = Array.isArray(locales) ? locales : [locales];
-
-    this._resolvedOptions = Object.assign({
-      locale: localeList[0],
+export class DurationFormat extends BaseFormat {
+  constructor(locales, options) {
+    super(locales, options, {
       maxUnit: 'hour',
       minUnit: 'second'
-    }, options);
+    });
 
     this._numFormatter = Intl.NumberFormat(locales, {
       style: 'decimal',
@@ -73,10 +71,6 @@ export class DurationFormat {
     this._maxUnitIdx = getDurationUnitIdx(this._resolvedOptions.maxUnit, 0);
     this._minUnitIdx = getDurationUnitIdx(this._resolvedOptions.minUnit,
       durationFormatOrder.length - 1);
-  }
-
-  resolvedOptions() {
-    return this._resolvedOptions;
   }
 
   format(input) {
