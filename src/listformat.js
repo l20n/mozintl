@@ -1,52 +1,24 @@
 import { BaseFormat} from './baseformat';
+import { deconstructPattern } from './utils';
 
-function injectParts(parts, elem) {
-  if (Array.isArray(elem)) {
-    parts.push(...elem);
-  } else {
-    parts.push({type: 'element', value: elem});
-  }
-}
-
-function pushParts(parts, list, pattern) {
-  if (list.length > 2) {
-    parts.push(...constructParts(list.slice(1), pattern));
-  } else {
-    injectParts(parts, list[1]);
-  }
-}
-
-function constructParts(list, pattern) {
-  let parts = [];
-
+export function constructParts(pattern, list) {
   if (list.length === 1) {
     return [{type: 'element', value: list[0]}];
   }
 
-  let chunks = pattern.split(/\{[01]\}/);
+  let elem0 = typeof list[0] === 'string' ?
+    {type: 'element', value: list[0]} : list[0];
 
-  let ltr = pattern.indexOf('{0}') < pattern.indexOf('{1}');
+  let elem1 = list.length === 2 ?
+    (typeof list[1] === 'string') ?
+      {type: 'element', value: list[1]} :
+      list[1] :
+    constructParts(pattern, list.slice(1));
 
-  chunks.forEach((chunk, i) => {
-    if (chunk) {
-      parts.push({type: 'literal', value: chunk});
-    }
-    if (i === 0) {
-      if (ltr) {
-        injectParts(parts, list[0]);
-      } else {
-        pushParts(parts, list, pattern);
-      }
-    } else if (i === 1) {
-      if (ltr) {
-        pushParts(parts, list, pattern);
-      } else {
-        injectParts(parts, list[0]);
-      }
-    }
+  return deconstructPattern(pattern, {
+    '0': elem0,
+    '1': elem1
   });
-
-  return parts;
 }
 
 function FormatToParts(type, style, list) {
@@ -72,7 +44,7 @@ function FormatToParts(type, style, list) {
 
   if (type === 'unit' || type === 'number') {
     return document.l10n.formatValue(`listformat-${type}`).then(pattern => {
-      return constructParts(list, pattern);
+      return constructParts(pattern, list);
     });
   }
 
@@ -80,7 +52,7 @@ function FormatToParts(type, style, list) {
 
   if (length === 2) {
     return document.l10n.formatValue(`${strid}-2`).then(pattern => {
-      return constructParts(list, pattern);
+      return constructParts(pattern, list);
     });
   }
 
@@ -89,16 +61,15 @@ function FormatToParts(type, style, list) {
     `${strid}-middle`,
     `${strid}-end`).then(([start, middle, end]) => {
 
-
-    let parts = constructParts([
+    let parts = constructParts(start, [
       list[0],
-      constructParts(list.slice(1, -1), middle)
-    ], start);
+      constructParts(middle, list.slice(1, -1))
+    ]);
 
-    parts = constructParts([
+    parts = constructParts(end, [
       parts, 
       list[list.length - 1]
-    ], end);
+    ]);
 
     return parts;
   });
@@ -121,6 +92,8 @@ export class ListFormat extends BaseFormat {
   }
 
   formatToParts(list) {
+    const type = this._resolvedOptions.type;
+    const style = this._resolvedOptions.style;
     return FormatToParts(type, style, list);
   }
 }

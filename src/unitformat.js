@@ -1,4 +1,5 @@
 import { BaseFormat} from './baseformat';
+import { deconstructPattern } from './utils';
 
 const unitFormatGroups = {
   'duration': {
@@ -22,6 +23,16 @@ function getUnitFormatGroupName(unitName) {
   return undefined;
 }
 
+function FormatToParts(patternId, x) {
+  return document.l10n.formatValue(patternId, {
+      value: x
+  }).then(pattern => {
+    return deconstructPattern(pattern, {
+      value: {type: 'number', value: x}
+    });
+  });
+}
+
 export class UnitFormat extends BaseFormat {
   constructor(locales, options) {
     super(locales, options, {
@@ -40,16 +51,16 @@ export class UnitFormat extends BaseFormat {
       throw new RangeError(`invalid value ${options.style} for option style`);
     }
 
-    this._unit = `${unitGroup}-${options.unit}-${options.style}`;
+    this._patternId = `${unitGroup}-${options.unit}-${options.style}`;
   }
 
   format(x) {
-    return document.l10n.formatValue(this._unit, {
-      value: x
+    return FormatToParts(this._patternId, x).then(parts => {
+      return parts.reduce((string, part) => string + part.value, '');
     });
   }
 
   formatToParts(list) {
-    return FormatToParts(type, style, list);
+    return FormatToParts(this._patternId, x);
   }
 }

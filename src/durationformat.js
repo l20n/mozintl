@@ -1,4 +1,5 @@
 import { BaseFormat} from './baseformat';
+import { deconstructPattern } from './utils';
 
 const durationFormatOrder = ['hour', 'minute', 'second', 'millisecond'];
 const durationFormatElements = {
@@ -26,18 +27,21 @@ function getDurationUnitIdx(name, defaultValue) {
 /*
  * This helper function is used by DurationFormat
  */
-function splitIntoTimeUnits(v, maxUnitIdx, minUnitIdx) {
+function splitIntoTimeUnits(v, maxUnitIdx, minUnitIdx, formatter) {
   const units = {};
   var input = Math.abs(v);
 
 
   for (var i = maxUnitIdx; i <= minUnitIdx; i++) {
     const key = durationFormatOrder[i];
-    const {value} = durationFormatElements[key];
-    units[key] = i == minUnitIdx ?
-      Math.round(input / value) :
-      Math.floor(input / value);
-    input -= units[key] * value;
+    const {value, token} = durationFormatElements[key];
+    const roundedValue = i === minUnitIdx ?
+        Math.round(input / value) : Math.floor(input / value);
+    units[token] = {
+      type: key,
+      value: formatter.format(roundedValue)
+    };
+    input -= roundedValue * value;
   }
   return units;
 }
@@ -50,9 +54,32 @@ function trimDurationPattern(string, maxUnit, minUnit) {
   // Even RTL languages use LTR duration formatting, so all we care
   // are separators.
   string = string.substring(
-    string.indexOf(maxToken),
-    string.indexOf(minToken) + minToken.length);
+    string.indexOf('{' + maxToken + '}'),
+    string.indexOf('{' + minToken + '}') + minToken.length + 2);
   return string;
+}
+
+function FormatToParts(minUnit, maxUnit, input) {
+  return document.l10n.formatValue('durationformat-pattern').then(fmt => {
+    // Rounding minUnit to closest visible unit
+    const minValue = durationFormatElements[minUnit].value;
+    input = Math.round(input / minValue) * minValue;
+
+    const duration = splitIntoTimeUnits(
+      input,
+      this._maxUnitIdx,
+      this._minUnitIdx,
+      this._numFormatter);
+
+    var string = trimDurationPattern(fmt, maxUnit, minUnit);
+
+    const parts = deconstructPattern(string, duration);
+
+    if (input < 0) {
+      parts.unshift({type:'negativeSign', value: '-'});
+    }
+    return parts;
+  });
 }
 
 export class DurationFormat extends BaseFormat {
@@ -74,32 +101,16 @@ export class DurationFormat extends BaseFormat {
   }
 
   format(input) {
-    return document.l10n.formatValue('durationformat-pattern').then(fmt => {
-      // Rounding minUnit to closest visible unit
-      const minValue = durationFormatElements[this._resolvedOptions.minUnit].value;
-      input = Math.round(input / minValue) * minValue;
-
-      const duration = splitIntoTimeUnits(input, this._maxUnitIdx, this._minUnitIdx);
-
-      var string = trimDurationPattern(fmt,
-                                       this._resolvedOptions.maxUnit, this._resolvedOptions.minUnit);
-
-
-      for (var unit in duration) {
-        const token = durationFormatElements[unit].token;
-
-        string = string.replace(token,
-                                this._numFormatter.format(duration[unit]));
-      }
-
-      if (input < 0) {
-        return '-' + string;
-      }
-      return string;
+    const minUnit = this._resolvedOptions.minUnit;
+    const maxUnit = this._resolvedOptions.maxUnit;
+    return FormatToParts.call(this, minUnit, maxUnit, input).then(parts => {
+      return parts.reduce((string, part) => string + part.value, '');
     });
   }
 
   formatToParts(list) {
-    return FormatToParts(type, style, list);
+    const minUnit = this._resolvedOptions.minUnit;
+    const maxUnit = this._resolvedOptions.maxUnit;
+    return FormatToParts.call(this, minUnit, maxUnit, input);
   }
 }

@@ -1,4 +1,5 @@
 import { BaseFormat} from './baseformat';
+import { deconstructPattern } from './utils';
 
 function computeTimeUnits(v) {
   const units = {};
@@ -32,43 +33,57 @@ function getBestMatchUnit(units) {
   return 'year';
 }
 
-function relativeTimeFormatId(x, options) {
+function relativeTimeFormatId(x, unit, style) {
   const ms = x - Date.now();
   const units = computeTimeUnits(ms);
-
-  const unit = options.unit === 'bestFit' ?
-    getBestMatchUnit(units) : options.unit;
 
   const v = units[unit];
 
   // CLDR uses past || future
   const tl = v < 0 ? '-ago' : '-until';
-  const style = options.style || 'long';
 
   const entry = unit + 's' + tl + '-' + style;
 
   return {
-    unit: entry,
+    patternId: entry,
     value: Math.abs(v)
   };
 }
 
+function FormatToParts(unit, style, x) {
+  const {patternId, value} = relativeTimeFormatId(x, unit, style);
+  return document.l10n.formatValue(patternId, {
+    value
+  }).then(pattern => {
+    return deconstructPattern(pattern, {
+      value: {type: 'number', value}
+    });
+  });
+}
+
 export class RelativeTimeFormat extends BaseFormat {
   constructor(locales, options) {
+    const resolvedUnit = 
+      options.unit === undefined || options.unit === 'bestFit' ?
+        getBestMatchUnit(units) : options.unit;
+
     super(locales, options, {
-      unit: 'bestFit',
       style: 'long'
     });
+    this._resolvedOptions.unit = resolvedUnit;
   }
 
   format(x) {
-    const {unit, value} = relativeTimeFormatId(x, this._resolvedOptions);
-    return document.l10n.formatValue(unit, {
-      value
+    const unit = this._resolvedOptions.unit;
+    const style = this._resolvedOptions.style;
+    return FormatToParts(unit, style, x).then(parts => {
+      return parts.reduce((string, part) => string + part.value, '');
     });
   }
 
   formatToParts(list) {
-    return FormatToParts(type, style, list);
+    const unit = this._resolvedOptions.unit;
+    const style = this._resolvedOptions.style;
+    return FormatToParts(unit, style, x);
   }
 }

@@ -9,6 +9,7 @@ const testValues = [
       {type: 'regular', style: 'long', value: ['Anna', 'John']},
       {type: 'regular', style: 'long', value: ['Anna', 'John', 'Ian']},
       {type: 'regular', style: 'long', value: ['Anna', 'John', 'Ian', 'Nick']},
+      {type: 'regular', style: 'long', value: ['Anna', 'John', 'Ian', 'Nick', 'Mark', 'Woody']},
 
       {type: 'duration', style: 'long', value: ['Monday']},
       {type: 'duration', style: 'long', value: ['Monday', 'Tuesday']},
@@ -74,7 +75,7 @@ const testValues = [
     values: [
       {minUnit: 'second', maxUnit: 'hour', value: 0},
       {minUnit: 'second', maxUnit: 'hour', value: 534141413},
-      {minUnit: 'millisecond', maxUnit: 'hour', value: 534141413},
+      {minUnit: 'millisecond', maxUnit: 'hour', value: -534141413},
     ]
   },
   {
