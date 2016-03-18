@@ -5,6 +5,7 @@ lint:
 	eslint src/
 
 build:
-	rollup -f iife -o ./dist/moz_intl.js src/index.js
+	rollup -f iife -o ./dist/web/moz_intl.js src/targets/web.js
+	rollup -f iife -o ./dist/gaia/moz_intl.js src/targets/gaia.js
 
 .PHONY: lint
