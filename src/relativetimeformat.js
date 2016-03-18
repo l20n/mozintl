@@ -1,7 +1,7 @@
 import { BaseFormat} from './baseformat';
 import { deconstructPattern } from './utils';
 
-function computeTimeUnits(v) {
+export function computeTimeUnits(v) {
   const units = {};
   const millisecond = Math.round(v);
   const second = Math.round(millisecond / 1000);
@@ -21,7 +21,7 @@ function computeTimeUnits(v) {
   return units;
 }
 
-function getBestMatchUnit(units) {
+export function getBestMatchUnit(units) {
   //if (Math.abs(units.second) < 45) { return 'second'; }
   if (Math.abs(units.minute) < 45) { return 'minute'; }
   if (Math.abs(units.hour) < 22) { return 'hour'; }
@@ -33,7 +33,7 @@ function getBestMatchUnit(units) {
   return 'year';
 }
 
-function relativeTimeFormatId(x, unit, style) {
+export function relativeTimeFormatId(x, unit, style) {
   const ms = x - Date.now();
   const units = computeTimeUnits(ms);
 

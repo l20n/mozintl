@@ -388,3 +388,13 @@ export function getCanonicalLocales(locales) {
   });
   return seen;
 }
+
+export function getCalendarInfo(token) {
+  switch (token) {
+    case 'firstDayOfTheWeek':
+      return document.l10n.formatValue('firstDayOfTheWeek').then(
+        firstDayOfTheWeek => parseInt(firstDayOfTheWeek) % 7);
+        default:
+          throw new Error('Unknown token: ' + token);
+  }
+}

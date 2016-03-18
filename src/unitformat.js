@@ -1,7 +1,7 @@
 import { BaseFormat} from './baseformat';
 import { deconstructPattern } from './utils';
 
-const unitFormatGroups = {
+export const unitFormatGroups = {
   'duration': {
     'units': ['second', 'minute', 'hour', 'day', 'month'],
     'styles': ['narrow'],
