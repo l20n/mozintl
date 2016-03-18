@@ -14,19 +14,14 @@ function getPluralRule(code, type) {
   return index[type];
 }
 
-function getOperands(num) {
-  let sv = num.toString();
-
-  if (sv.startsWith('-')) {
-    sv = sv.substr(1);
-  }
-
-  const dp = sv.indexOf('.');
+function getOperands(x) {
+  let sv = x.toString();
 
   let iv, fv;
   let n = Number(sv),
     i = 0, v = 0, f = 0, t = 0, w = 0;
 
+  const dp = sv.indexOf('.');
 
   if (dp === -1) {
     iv = sv;
@@ -40,14 +35,19 @@ function getOperands(num) {
   i = parseInt(iv);
 
   if (f !== 0) {
-    t = fv;
+    let ft = fv;
 
-    while (t.endsWith(0)) {
-      t = t.slice(0, -1);
+    while (ft.endsWith('0')) {
+      ft = ft.slice(0, -1);
     }
 
-    w = t.length;
-    t = parseInt(t);
+    w = ft.length;
+    t = parseInt(ft);
+  }
+
+  if (parseInt(x) < 0) {
+    n = -n;
+    i = -i;
   }
 
   return {n, i, v, w, f, t};

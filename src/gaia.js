@@ -39,11 +39,16 @@ export const gaia = {
           return Promise.resolve(maxFormatter.format(time));
         }
 
-        const {unit, value} = relativeTimeFormatId(time, relativeFmtOptions);
-        return document.l10n.formatValue(unit, {
+        const {patternId, value} =
+          relativeTimeFormatId(time,
+                               relativeFmtOptions.unit,
+                               relativeFmtOptions.style);
+
+        return document.l10n.formatValue(patternId, {
           value
         });
       },
+
       formatElement: function(element, time, maxDiff) {
         maxDiff = maxDiff || 86400 * 10; // default = 10 days
         const secDiff = (Date.now() - time) / 1000;
@@ -51,12 +56,16 @@ export const gaia = {
           element.setAttribute('data-l10n-id', 'incorrectDate');
         }
 
-        element.removeAttribute('data-l10n-id');
         if (secDiff > maxDiff) {
+          element.removeAttribute('data-l10n-id');
           element.textContent = maxFormatter.format(time);
         }
 
-        const {unit, value} = relativeTimeFormatId(time, relativeFmtOptions);
+        const {patternId, value} =
+          relativeTimeFormatId(time,
+                               relativeFmtOptions.unit,
+                               relativeFmtOptions.style);
+
         document.l10n.setAttributes(element, unit, {
           value
         });

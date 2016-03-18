@@ -43,6 +43,7 @@ const testValues = [
       {type: 'cardinal', value: 3},
       {type: 'cardinal', value: 5},
       {type: 'cardinal', value: 23},
+      {type: 'cardinal', value: "1.0"},
       {type: 'cardinal', value: "1.5"},
       {type: 'cardinal', locale: 'pl', value: 0},
       {type: 'cardinal', locale: 'pl', value: 1},
@@ -152,6 +153,8 @@ function displayExampleValues() {
         let td = document.createElement('td');
         if (param === 'locale') {
           td.textContent = locale;
+        } else if (param === 'value') {
+          td.textContent = val[param];
         } else {
           if (bundle.formatter) {
             td.textContent = obj.resolvedOptions()[param];
