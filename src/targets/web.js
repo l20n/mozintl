@@ -1,6 +1,6 @@
 import { ListFormat } from '../formatters/list';
 import { PluralRules } from '../formatters/plural';
-import { getCanonicalLocales, getCalendarInfo } from '../locale';
+import { getCanonicalLocales } from '../locale';
 import { DurationFormat } from '../formatters/duration';
 import { RelativeTimeFormat } from '../formatters/relativetime';
 import { UnitFormat } from '../formatters/unit';
@@ -13,5 +13,4 @@ window.mozIntl = {
   RelativeTimeFormat,
   UnitFormat,
   getCanonicalLocales,
-  getCalendarInfo,
 };

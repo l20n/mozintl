@@ -98,6 +98,9 @@ export class UnitFormat extends BaseFormat {
   }
 
   format(x) {
+    if (isNaN(parseInt(x))) {
+      return Promise.resolve(undefined);
+    }
     const type = this._resolvedOptions.type;
     let unit, value;
     if (this._resolvedOptions.unit === 'bestFit') {

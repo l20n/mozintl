@@ -1,5 +1,5 @@
 import { ListFormat } from '../formatters/list';
-import { getCanonicalLocales, getCalendarInfo } from '../locale';
+import { getCalendarInfo } from '../locale';
 import { DurationFormat } from '../formatters/duration';
 import { RelativeTimeFormat } from '../formatters/relativetime';
 import { UnitFormat } from '../formatters/unit';
@@ -11,7 +11,6 @@ window.mozIntl = {
   DurationFormat,
   RelativeTimeFormat,
   UnitFormat,
-  getCanonicalLocales,
   getCalendarInfo,
   _gaia: gaia
 };

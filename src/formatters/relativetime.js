@@ -36,7 +36,12 @@ export function getBestMatchUnit(units) {
 
 export function relativeTimeFormatId(x, unit, style) {
   const ms = x - Date.now();
+
   const units = computeTimeUnits(ms);
+
+  if (unit === 'bestFit') {
+    unit = getBestMatchUnit(units);
+  }
 
   const v = units[unit];
 
@@ -64,14 +69,10 @@ function FormatToParts(unit, style, x) {
 
 export class RelativeTimeFormat extends BaseFormat {
   constructor(locales, options) {
-    const resolvedUnit = 
-      options.unit === undefined || options.unit === 'bestFit' ?
-        getBestMatchUnit(units) : options.unit;
-
     super(locales, options, {
-      style: 'long'
+      style: 'long',
+      unit: 'bestFit'
     });
-    this._resolvedOptions.unit = resolvedUnit;
   }
 
   format(x) {

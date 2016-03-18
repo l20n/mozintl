@@ -1,4 +1,5 @@
-import { getBestMatchUnit,
+import { computeTimeUnits,
+         getBestMatchUnit,
          relativeTimeFormatId } from './formatters/relativetime';
 
 const DAY_IN_S = 86400;
