@@ -92,12 +92,13 @@ const testValues = [
     name: 'UnitFormat',
     formatter: mozIntl.UnitFormat,
     testMethod: 'format',
-    params: ['unit', 'style'],
+    params: ['unit', 'type', 'style'],
     values: [
       {unit: 'byte', style: 'short', value: 10},
       {unit: 'month', style: 'narrow', value: 10},
       {unit: 'gigabyte', style: 'short', value: 10},
       {unit: 'hour', style: 'narrow', value: 10},
+      {type: 'duration', style: 'narrow', value: 10 * 24 * 60 * 60},
     ]
   },
 ];
@@ -134,6 +135,17 @@ function displayExampleValues() {
 
       let locale = val.locale || 'en-US';
 
+      let options = {};
+
+      bundle.params.forEach(param => {
+        if (val[param]) {
+          options[param] = val[param];
+        }
+      });
+
+      let obj = bundle.formatter ?
+        new bundle.formatter(locale, options) : mozIntl;
+
       params.forEach(param => {
         if (param === 'output') return;
 
@@ -141,19 +153,16 @@ function displayExampleValues() {
         if (param === 'locale') {
           td.textContent = locale;
         } else {
-          td.textContent = val[param];
+          if (bundle.formatter) {
+            td.textContent = obj.resolvedOptions()[param];
+          } else {
+            td.textContent = val[param];
+          }
         }
         tr.appendChild(td);
       });
 
-      let options = {};
 
-      bundle.params.forEach(param => {
-        options[param] = val[param];
-      });
-
-      let obj = bundle.formatter ?
-        new bundle.formatter(locale, options) : mozIntl;
 
       td = document.createElement('td');
 
