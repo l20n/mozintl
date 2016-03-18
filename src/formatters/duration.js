@@ -29,10 +29,10 @@ function getDurationUnitIdx(name, defaultValue) {
  */
 function splitIntoTimeUnits(v, maxUnitIdx, minUnitIdx, formatter) {
   const units = {};
-  var input = Math.abs(v);
+  let input = Math.abs(v);
 
 
-  for (var i = maxUnitIdx; i <= minUnitIdx; i++) {
+  for (let i = maxUnitIdx; i <= minUnitIdx; i++) {
     const key = durationFormatOrder[i];
     const {value, token} = durationFormatElements[key];
     const roundedValue = i === minUnitIdx ?
@@ -71,7 +71,7 @@ function FormatToParts(minUnit, maxUnit, input) {
       this._minUnitIdx,
       this._numFormatter);
 
-    var string = trimDurationPattern(fmt, maxUnit, minUnit);
+    const string = trimDurationPattern(fmt, maxUnit, minUnit);
 
     const parts = deconstructPattern(string, duration);
 
@@ -108,7 +108,7 @@ export class DurationFormat extends BaseFormat {
     });
   }
 
-  formatToParts(list) {
+  formatToParts(input) {
     const minUnit = this._resolvedOptions.minUnit;
     const maxUnit = this._resolvedOptions.maxUnit;
     return FormatToParts.call(this, minUnit, maxUnit, input);

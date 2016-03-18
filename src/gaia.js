@@ -1,6 +1,11 @@
-import { computerTimeUnits,
-         getBestMatchUnit,
+import { getBestMatchUnit,
          relativeTimeFormatId } from './formatters/relativetime';
+
+const DAY_IN_S = 86400;
+const SECOND_IN_MS = 1000;
+const MAX_DAYS = 10;
+// 10 days
+const DEFAULT_MAX_DIFF = DAY_IN_S * MAX_DAYS;
 
 export const gaia = {
   // This is an internal Firefox OS function, not part of the future standard
@@ -29,8 +34,8 @@ export const gaia = {
 
     return {
       format: function(time, maxDiff) {
-        maxDiff = maxDiff || 86400 * 10; // default = 10 days
-        const secDiff = (Date.now() - time) / 1000;
+        maxDiff = maxDiff || DEFAULT_MAX_DIFF;
+        const secDiff = (Date.now() - time) / SECOND_IN_MS;
         if (isNaN(secDiff)) {
           return document.l10n.formatValue('incorrectDate');
         }
@@ -50,8 +55,8 @@ export const gaia = {
       },
 
       formatElement: function(element, time, maxDiff) {
-        maxDiff = maxDiff || 86400 * 10; // default = 10 days
-        const secDiff = (Date.now() - time) / 1000;
+        maxDiff = maxDiff || DEFAULT_MAX_DIFF;
+        const secDiff = (Date.now() - time) / SECOND_IN_MS;
         if (isNaN(secDiff)) {
           element.setAttribute('data-l10n-id', 'incorrectDate');
         }
@@ -66,7 +71,7 @@ export const gaia = {
                                relativeFmtOptions.unit,
                                relativeFmtOptions.style);
 
-        document.l10n.setAttributes(element, unit, {
+        document.l10n.setAttributes(element, patternId, {
           value
         });
       },

@@ -1,25 +1,5 @@
-/**
- * 1) Introduce a global `Locale` object with a set of static methods
- * that allow to operate on language tags and negotiate locales
- *
- * Initially expose three functions that are currently inside Intl
- *
- *   - CanonicalizeLocaleList
- *   - ResolveLocale
- *   - SupportedLocales
- *
- * And introduce a new function:
- * 
- *   - PrioritizeAvailableLocales
- *
- * Future extensions:
- * - Operations on LangugageTag
- * - Language Tag comparators
- **/
+/*eslint max-len: [0], no-magic-numbers: [0]*/
 
-const unicodeLocaleExtensionSequence = '-u(-[a-z0-9]{2,8})+';
-const unicodeLocaleExtensionSequenceRE = new RegExp(unicodeLocaleExtensionSequence);
-const unicodeLocaleExtensionSequenceGlobalRE = new RegExp(unicodeLocaleExtensionSequence, 'g');
 const langTagMappings = {};
 const langSubtagMappings = {};
 const extlangMappings = {};
@@ -189,26 +169,6 @@ const duplicateSingletonRE = (function () {
   // list both upper- and lower-case characters.
   return new RegExp(duplicateSingleton);
 }());
-
-/**
- * Removes Unicode locale extension sequences from the given language tag.
- */
-function removeUnicodeExtensions(locale) {
-  if (locale.startsWith('x-')) {
-    return locale;
-  }
-
-  let pos = locale.indexOf('-x-');
-  if (pos < 0) {
-    pos = locale.length;
-  }
-
-  const left = locale.substring(0, pos);
-  const right = locale.substring(pos);
-
-  const combined = left + right;
-  return combined;
-}
 
 /**
  * Verifies that the given string is a well-formed BCP 47 language tag
@@ -394,7 +354,7 @@ export function getCalendarInfo(token) {
     case 'firstDayOfTheWeek':
       return document.l10n.formatValue('firstDayOfTheWeek').then(
         firstDayOfTheWeek => parseInt(firstDayOfTheWeek) % 7);
-        default:
-          throw new Error('Unknown token: ' + token);
+    default:
+      throw new Error('Unknown token: ' + token);
   }
 }

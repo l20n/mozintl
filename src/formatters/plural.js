@@ -15,7 +15,7 @@ function getPluralRule(code, type) {
 }
 
 function getOperands(x) {
-  let sv = x.toString();
+  const sv = x.toString();
 
   let iv, fv;
   let n = Number(sv),

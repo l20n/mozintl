@@ -6,14 +6,20 @@ export function constructParts(pattern, list) {
     return [{type: 'element', value: list[0]}];
   }
 
-  let elem0 = typeof list[0] === 'string' ?
+  const elem0 = typeof list[0] === 'string' ?
     {type: 'element', value: list[0]} : list[0];
 
-  let elem1 = list.length === 2 ?
-    (typeof list[1] === 'string') ?
-      {type: 'element', value: list[1]} :
-      list[1] :
-    constructParts(pattern, list.slice(1));
+  let elem1;
+
+  if (list.length === 2) {
+    if (typeof list[1] === 'string') {
+      elem1 = {type: 'element', value: list[1]}; 
+    } else {
+      elem1 = list[1];
+    }
+  } else {
+    elem1 = constructParts(pattern, list.slice(1));
+  }
 
   return deconstructPattern(pattern, {
     '0': elem0,
@@ -60,19 +66,19 @@ function FormatToParts(type, style, list) {
     `${strid}-start`,
     `${strid}-middle`,
     `${strid}-end`).then(([start, middle, end]) => {
+      let parts = constructParts(start, [
+        list[0],
+        constructParts(middle, list.slice(1, -1))
+      ]);
 
-    let parts = constructParts(start, [
-      list[0],
-      constructParts(middle, list.slice(1, -1))
-    ]);
+      parts = constructParts(end, [
+        parts, 
+        list[list.length - 1]
+      ]);
 
-    parts = constructParts(end, [
-      parts, 
-      list[list.length - 1]
-    ]);
-
-    return parts;
-  });
+      return parts;
+    }
+  );
 }
 
 export class ListFormat extends BaseFormat {

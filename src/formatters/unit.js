@@ -15,6 +15,7 @@ export const unitFormatGroups = {
 };
 
 export const unitFormatData = {
+  /*eslint no-magic-numbers: [0]*/
   'duration': [
     {'name': 'second', 'value': 1},
     {'name': 'minute', 'value': 60},
@@ -32,6 +33,7 @@ export const unitFormatData = {
 };
 
 function getUnitFormatGroupName(unit) {
+  /*eslint prefer-const: 0*/
   for (let groupName in unitFormatGroups) {
     if (unitFormatGroups[groupName].units.includes(unit)) {
       return groupName;
@@ -42,9 +44,9 @@ function getUnitFormatGroupName(unit) {
 }
 
 function selectUnit(type, x) {
-  var units = unitFormatData[type];
+  const units = unitFormatData[type];
 
-  var scale = 0;
+  let scale = 0;
 
   for (let i = 1; i < units.length; i++) {
     if (x < units[i].value * unitFormatGroups[type].rounding) {
@@ -55,7 +57,7 @@ function selectUnit(type, x) {
     }
   }
 
-  var value = Math.round(x / units[scale].value * 100) / 100;
+  const value = Math.round(x / units[scale].value * 100) / 100;
 
   return {
     unit: units[scale].name,
@@ -65,7 +67,7 @@ function selectUnit(type, x) {
 
 function FormatToParts(patternId, x) {
   return document.l10n.formatValue(patternId, {
-      value: x
+    value: x
   }).then(pattern => {
     return deconstructPattern(pattern, {
       value: {type: 'number', value: x}
@@ -99,7 +101,7 @@ export class UnitFormat extends BaseFormat {
     const type = this._resolvedOptions.type;
     let unit, value;
     if (this._resolvedOptions.unit === 'bestFit') {
-      let vals = selectUnit(type, x);
+      const vals = selectUnit(type, x);
       unit = vals.unit;
       value = vals.value;
     } else {
@@ -114,7 +116,7 @@ export class UnitFormat extends BaseFormat {
     });
   }
 
-  formatToParts(list) {
+  formatToParts(x) {
     return FormatToParts(this._patternId, x);
   }
 }

@@ -2,6 +2,7 @@ import { BaseFormat} from './base';
 import { deconstructPattern } from '../utils';
 
 export function computeTimeUnits(v) {
+  /*eslint no-magic-numbers: [0]*/
   const units = {};
   const millisecond = Math.round(v);
   const second = Math.round(millisecond / 1000);
@@ -22,14 +23,14 @@ export function computeTimeUnits(v) {
 }
 
 export function getBestMatchUnit(units) {
-  //if (Math.abs(units.second) < 45) { return 'second'; }
-  if (Math.abs(units.minute) < 45) { return 'minute'; }
-  if (Math.abs(units.hour) < 22) { return 'hour'; }
+  //if (Math.abs(units.second) < 45) return 'second';
+  if (Math.abs(units.minute) < 45) return 'minute';
+  if (Math.abs(units.hour) < 22) return 'hour';
   // Intl uses 26 days here
-  if (Math.abs(units.day) < 7) { return 'day'; }
-  if (Math.abs(units.week) < 4) { return 'week'; }
-  if (Math.abs(units.month) < 11) { return 'month'; }
-  //if (Math.abs(units.quarter) < 4) { return 'quarter'; }
+  if (Math.abs(units.day) < 7) return 'day';
+  if (Math.abs(units.week) < 4) return 'week';
+  if (Math.abs(units.month) < 11) return 'month';
+  //if (Math.abs(units.quarter) < 4) return 'quarter';
   return 'year';
 }
 
@@ -81,7 +82,7 @@ export class RelativeTimeFormat extends BaseFormat {
     });
   }
 
-  formatToParts(list) {
+  formatToParts(x) {
     const unit = this._resolvedOptions.unit;
     const style = this._resolvedOptions.style;
     return FormatToParts(unit, style, x);
