@@ -23,14 +23,15 @@ export function computeTimeUnits(v) {
 }
 
 export function getBestMatchUnit(units) {
-  //if (Math.abs(units.second) < 45) return 'second';
-  if (Math.abs(units.minute) < 45) return 'minute';
-  if (Math.abs(units.hour) < 22) return 'hour';
+  /*eslint brace-style: [0]*/
+  //if (Math.abs(units.second) < 45) { return 'second'; }
+  if (Math.abs(units.minute) < 45) { return 'minute'; }
+  if (Math.abs(units.hour) < 22) { return 'hour'; }
   // Intl uses 26 days here
-  if (Math.abs(units.day) < 7) return 'day';
-  if (Math.abs(units.week) < 4) return 'week';
-  if (Math.abs(units.month) < 11) return 'month';
-  //if (Math.abs(units.quarter) < 4) return 'quarter';
+  if (Math.abs(units.day) < 7) { return 'day'; }
+  if (Math.abs(units.week) < 4) { return 'week'; }
+  if (Math.abs(units.month) < 11) { return 'month'; }
+  //if (Math.abs(units.quarter) < 4) { return 'quarter'; }
   return 'year';
 }
 
