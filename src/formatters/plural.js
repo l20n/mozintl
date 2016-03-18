@@ -1,6 +1,6 @@
-import { BaseFormat} from './baseformat';
+import { BaseFormat} from './base';
 
-import { localeRules } from '../data/plural-rules';
+import { localeRules } from '../../data/plural-rules';
 
 function getPluralRule(code, type) {
   // return a function that gives the plural form name for a given integer

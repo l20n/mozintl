@@ -1,5 +1,5 @@
-import { BaseFormat} from './baseformat';
-import { deconstructPattern } from './utils';
+import { BaseFormat} from './base';
+import { deconstructPattern } from '../utils';
 
 const durationFormatOrder = ['hour', 'minute', 'second', 'millisecond'];
 const durationFormatElements = {

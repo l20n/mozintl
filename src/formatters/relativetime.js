@@ -1,5 +1,5 @@
-import { BaseFormat} from './baseformat';
-import { deconstructPattern } from './utils';
+import { BaseFormat} from './base';
+import { deconstructPattern } from '../utils';
 
 export function computeTimeUnits(v) {
   const units = {};

@@ -1,6 +1,6 @@
 import { computerTimeUnits,
          getBestMatchUnit,
-         relativeTimeFormatId } from './relativetimeformat';
+         relativeTimeFormatId } from './formatters/relativetime';
 
 export const gaia = {
   // This is an internal Firefox OS function, not part of the future standard
