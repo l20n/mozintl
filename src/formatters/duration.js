@@ -89,7 +89,7 @@ export class DurationFormat extends BaseFormat {
       minUnit: 'second'
     });
 
-    this._numFormatter = Intl.NumberFormat(locales, {
+    this._numFormatter = new Intl.NumberFormat(locales, {
       style: 'decimal',
       useGrouping: false,
       minimumIntegerDigits: 2
