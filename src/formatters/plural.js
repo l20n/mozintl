@@ -2,6 +2,19 @@ import { BaseFormat} from './base';
 
 import { localeRules } from '../../data/plural-rules';
 
+function GetNumberOption(options, prop, min, max, fallback) {
+  let value = options[prop];
+
+  if (value !== undefined) {
+    let value = Number(value);
+    if (value === NaN || value < min || value > max) {
+      throw RangeError('Value outside of range');
+    }
+    return Math.floor(value);
+  }
+  return fallback;
+}
+
 function getPluralRule(code, type) {
   // return a function that gives the plural form name for a given integer
   const index = localeRules[code.replace(/-.*$/, '')];
@@ -57,13 +70,42 @@ export class PluralRules extends BaseFormat {
   constructor(locales, options) {
     super(locales, options, {
       type: 'cardinal',
+      minimumIntegerDigits: 1,
+      minimumFractionDigits: undefined,
+      maximumFractionDigits: 3,
+      minimumSignificantDigits: undefined,
+      maximumSignificantDigits: undefined
     });
+
+    this._resolvedOptions.minimumIntegerDigits =
+      GetNumberOption(options, 'minimumIntegerDigits', 1, 21, 1);
+
+    let mnfd = GetNumberOption(options, 'minimumFractionDigits', 0, 20, 0);
+    this._resolvedOptions.minimumFractionDigits = mnfd;
+
+    let._resolvedOptions.maximumFractionDigits =
+      GetNumberOption(options,
+                      'maximumFractionDigits', mnfd, 20, Math.max(mnfd, 3));
+
+    if (options['minimumSignificantDigits'] ||
+        options['maximumSignificantDigits']) {
+      let mnsd =
+        GetNumberOption(options, 'minimumSignificantDigits', 1, 21, 1);
+      this._resolvedOptions.minimumSignificantDigits = mnsd;
+        
+      this._resolvedOptions.maximumSignificantDigits =
+        GetNumberOption(options, 'maximumSignificantDigits', mnsd, 21, 1);
+    }
   }
 
   select(num) {
     const pluralRuleFn = getPluralRule(
       this._resolvedOptions.locale, this._resolvedOptions.type);
 
+    if (this._resolvedOptions.minimumSignificantDigits !== undefined &&
+        this._resolvedOptions.maximumSignificantDigits !== undefined) {
+
+    }
     const {n, i, v, w, f, t} = getOperands(num);
 
     return pluralRuleFn(n, i, v, w, f, t);
