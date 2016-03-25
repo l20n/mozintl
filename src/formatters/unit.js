@@ -112,7 +112,7 @@ export class UnitFormat extends BaseFormat {
       value = x;
     }
     const style = this._resolvedOptions.style;
-    const patternId = `${type}-${unit}-${style}`;
+    const patternId = `unitformat-${type}-${unit}-${style}`;
 
     return FormatToParts(patternId, value).then(parts => {
       return parts.reduce((string, part) => string + part.value, '');
