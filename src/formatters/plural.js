@@ -1,3 +1,4 @@
+/* eslint no-magic-numbers: [0] */
 import { BaseFormat} from './base';
 
 import { localeRules } from '../../data/plural-rules';
@@ -16,15 +17,15 @@ function GetNumberOption(options, prop, min, max, fallback) {
 }
 
 function ToRawPrecision(x, minPrecision, maxPrecision) {
-  let p = maxPrecision;
+  const p = maxPrecision;
   let m, e;
 
   if (x === 0) {
     m = Array(p + 1).join('0');
     e = 0;
   } else {
-    e = log10Floor(Math.abs(x));
-    let f = Math.round(Math.exp((Math.abs(e - p + 1)) * Math.LN10));
+    e = Math.floor(Math.log10(Math.abs(x)));
+    const f = Math.round(Math.exp((Math.abs(e - p + 1)) * Math.LN10));
 
     m = String(Math.round(e - p + 1 < 0 ? x * f : x / f));
   }
@@ -54,15 +55,16 @@ function ToRawPrecision(x, minPrecision, maxPrecision) {
 }
 
 function ToRawFixed(x, minInteger, minFraction, maxFraction) {
-  let idx,
-    m = Number.prototype.toFixed.call(x, maxFraction),
-    igr = m.split('.')[0].length,
-    cut = maxFraction - minFraction,
-    exp = (idx = m.indexOf('e')) > -1 ? m.slice(idx + 1) : 0;
+  let m = Number.prototype.toFixed.call(x, maxFraction);
+  const idx = m.indexOf('e');
+  let igr = m.split('.')[0].length;
+  let cut = maxFraction - minFraction;
+  const exp = idx > -1 ? m.slice(idx + 1) : 0;
 
   if (exp) {
     m = m.slice(0, idx).replace('.', '');
-    m += Array(exp - (m.length - 1) + 1).join('0') + '.' + Array(maxFraction + 1).join('0');
+    m += Array(exp - (m.length - 1) + 1).join('0') +
+      '.' + Array(maxFraction + 1).join('0');
 
     igr = m.length;
   }
@@ -141,7 +143,7 @@ export class PluralRules extends BaseFormat {
     this._resolvedOptions.minimumIntegerDigits =
       GetNumberOption(options, 'minimumIntegerDigits', 1, 21, 1);
 
-    let mnfd = GetNumberOption(options, 'minimumFractionDigits', 0, 20, 0);
+    const mnfd = GetNumberOption(options, 'minimumFractionDigits', 0, 20, 0);
     this._resolvedOptions.minimumFractionDigits = mnfd;
 
     this._resolvedOptions.maximumFractionDigits =
@@ -150,7 +152,7 @@ export class PluralRules extends BaseFormat {
 
     if (options['minimumSignificantDigits'] ||
         options['maximumSignificantDigits']) {
-      let mnsd =
+      const mnsd =
         GetNumberOption(options, 'minimumSignificantDigits', 1, 21, 1);
       this._resolvedOptions.minimumSignificantDigits = mnsd;
         
@@ -160,7 +162,6 @@ export class PluralRules extends BaseFormat {
   }
 
   select(x) {
-    let negative = false;
     let n;
 
     x = Number(x);
