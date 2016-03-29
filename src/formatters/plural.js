@@ -126,7 +126,7 @@ function getOperands(n) {
     t = parseInt(ft);
   }
 
-  return {n, i, v, w, f, t};
+  return {i, v, w, f, t};
 }
 
 export class PluralRules extends BaseFormat {
@@ -163,20 +163,19 @@ export class PluralRules extends BaseFormat {
 
   select(x) {
     let n;
+    const nx = Number(x);
 
-    x = Number(x);
-
-    if (!isFinite(x)) {
+    if (!isFinite(nx)) {
       return 'other';
     }
 
     if (this._resolvedOptions.minimumSignificantDigits !== undefined &&
         this._resolvedOptions.maximumSignificantDigits !== undefined) {
-      n = ToRawPrecision(x,
+      n = ToRawPrecision(nx,
                          this._resolvedOptions.minimumSignificantDigits,
                          this._resolvedOptions.maximumSignificantDigits);
     } else {
-      n = ToRawFixed(x,
+      n = ToRawFixed(nx,
                      this._resolvedOptions.minimumIntegerDigits,
                      this._resolvedOptions.minimumFractionDigits,
                      this._resolvedOptions.maximumFractionDigits);
