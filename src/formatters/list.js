@@ -66,15 +66,21 @@ function FormatToParts(type, style, list) {
     `${strid}-start`,
     `${strid}-middle`,
     `${strid}-end`).then(([start, middle, end]) => {
-      let parts = constructParts(start, [
-        list[0],
-        constructParts(middle, list.slice(1, -1))
-      ]);
+      let parts = list[length - 1];
 
-      parts = constructParts(end, [
-        parts, 
-        list[list.length - 1]
-      ]);
+      for (let i = length - 2; i >= 0; i--) {
+        let template = middle;
+        if (i === length - 2) {
+          template = end;
+        } else if (i === 0) {
+          template = start;
+        }
+
+        parts = constructParts(template, [
+          list[i],
+          parts
+        ]);
+      }
 
       return parts;
     }
