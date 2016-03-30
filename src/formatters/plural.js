@@ -126,6 +126,11 @@ function getOperands(n) {
     t = parseInt(ft);
   }
 
+  if (n < 0) {
+    n = -n;
+    i = -i;
+  }
+
   return {i, v, w, f, t};
 }
 
@@ -186,10 +191,6 @@ export class PluralRules extends BaseFormat {
 
     const {i, v, w, f, t} = getOperands(n);
 
-    if (parseInt(x) < 0) {
-      n = -n;
-      i = -i;
-    }
     return pluralRuleFn(n, i, v, w, f, t);
   }
 }
