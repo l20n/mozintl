@@ -102,13 +102,19 @@ function getOperands(n) {
   let iv, fv;
   let i = 0, v = 0, f = 0, t = 0, w = 0;
 
-  const dp = n.indexOf('.');
+  if (n < 0) {
+    n = Math.abs(n);
+  }
+
+  const s = n.toString();
+
+  const dp = s.indexOf('.');
 
   if (dp === -1) {
     iv = n;
   } else {
-    iv = n.substr(0, dp);
-    fv = n.substr(dp + 1);
+    iv = s.substr(0, dp);
+    fv = s.substr(dp + 1);
     f = parseInt(fv);
     v = fv.length;
   }
@@ -126,12 +132,7 @@ function getOperands(n) {
     t = parseInt(ft);
   }
 
-  if (n < 0) {
-    n = -n;
-    i = -i;
-  }
-
-  return {i, v, w, f, t};
+  return {n, i, v, w, f, t};
 }
 
 export class PluralRules extends BaseFormat {

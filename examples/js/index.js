@@ -1,7 +1,7 @@
 const testValues = [
   {
     name: 'ListFormat',
-    formatter: mozIntl.ListFormat,
+    formatter: Intl.ListFormat,
     testMethod: 'format',
     params: ['type', 'style'],
     values: [
@@ -34,7 +34,7 @@ const testValues = [
   },
   {
     name: 'PluralRules',
-    formatter: mozIntl.PluralRules,
+    formatter: Intl.PluralRules,
     testMethod: 'select',
     params: ['type', 'minimumFractionDigits'],
     values: [
@@ -76,7 +76,7 @@ const testValues = [
   },
   {
     name: 'DurationFormat',
-    formatter: mozIntl.DurationFormat,
+    formatter: Intl.DurationFormat,
     testMethod: 'format',
     params: ['minUnit', 'maxUnit'],
     values: [
@@ -87,7 +87,7 @@ const testValues = [
   },
   {
     name: 'RelativeTimeFormat',
-    formatter: mozIntl.RelativeTimeFormat,
+    formatter: Intl.RelativeTimeFormat,
     testMethod: 'format',
     params: ['unit', 'style'],
     values: [
@@ -97,7 +97,7 @@ const testValues = [
   },
   {
     name: 'UnitFormat',
-    formatter: mozIntl.UnitFormat,
+    formatter: Intl.UnitFormat,
     testMethod: 'format',
     params: ['unit', 'type', 'style'],
     values: [
@@ -151,7 +151,7 @@ function displayExampleValues() {
       });
 
       let obj = bundle.formatter ?
-        new bundle.formatter(locale, options) : mozIntl;
+        new bundle.formatter(locale, options) : Intl;
 
       params.forEach(param => {
         if (param === 'output') return;

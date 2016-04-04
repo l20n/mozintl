@@ -6,11 +6,11 @@ import { RelativeTimeFormat } from '../formatters/relativetime';
 import { UnitFormat } from '../formatters/unit';
 
 
-window.mozIntl = {
+window.Intl = Object.assign(window.Intl, {
   ListFormat,
   PluralRules,
   DurationFormat,
   RelativeTimeFormat,
   UnitFormat,
   getCanonicalLocales,
-};
+});
