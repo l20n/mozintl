@@ -98,15 +98,11 @@ function getPluralRule(code, type) {
   return index[type];
 }
 
-function getOperands(n) {
+function GetOperands(s) {
+  let n = Number(s);
+
   let iv, fv;
   let i = 0, v = 0, f = 0, t = 0, w = 0;
-
-  if (n < 0) {
-    n = Math.abs(n);
-  }
-
-  const s = n.toString();
 
   const dp = s.indexOf('.');
 
@@ -115,11 +111,11 @@ function getOperands(n) {
   } else {
     iv = s.substr(0, dp);
     fv = s.substr(dp + 1);
-    f = parseInt(fv);
+    f = Number(fv);
     v = fv.length;
   }
 
-  i = parseInt(iv);
+  i = Math.abs(Number(iv));
 
   if (f !== 0) {
     let ft = fv;
@@ -129,10 +125,56 @@ function getOperands(n) {
     }
 
     w = ft.length;
-    t = parseInt(ft);
+    t = Number(ft);
   }
 
-  return {n, i, v, w, f, t};
+  return {
+    '[[Number]]': n,
+    '[[IntegerDigits]]': i,
+    '[[NumberOfFractionDigits]]': v,
+    '[[NumberOfFractionDigitsWithoutTrailing]]': w,
+    '[[FractionDigits]]': f,
+    '[[FractionDigitsWithoutTrailing]]': t
+  };
+}
+
+function PluralRuleSelection(locale, type, operands) {
+  const pluralRulesFn = getPluralRule(locale, type);
+  return pluralRulesFn(
+    operands['[[Number]]'],
+    operands['[[IntegerDigits]]'],
+    operands['[[NumberOfFractionDigits]]'],
+    operands['[[NumberOfFractionDigitsWithoutTrailing]]'],
+    operands['[[FractionDigits]]'],
+    operands['[[FractionDigitsWithoutTrailing]]']
+  );
+}
+
+function ResolvePlural(pluralRules, n) {
+  if (!isFinite(n)) {
+    return 'other';
+  }
+
+  let s;
+
+  if (pluralRules['[[MinimumSignificantDigits]]'] !== undefined &&
+      pluralRules['[[MaximumSignificantDigits]]'] !== undefined) {
+    s = ToRawPrecision(n,
+                       pluralRules['[[MinimumSignificantDigits]]'],
+                       pluralRules['[[maximumSignificantDigits]]']);
+  } else {
+    s = ToRawFixed(n,
+                   pluralRules['[[MinimumIntegerDigits]]'],
+                   pluralRules['[[MinimumFractionDigits]]'],
+                   pluralRules['[[MaximumFractionDigits]]']);
+  }
+
+  let locale = pluralRules['[[Locale]]'];
+  let type = pluralRules['[[Type]]'];
+
+  let operands = GetOperands(s);
+
+  return PluralRuleSelection(locale, type, operands);
 }
 
 export class PluralRules extends BaseFormat {
@@ -146,13 +188,13 @@ export class PluralRules extends BaseFormat {
       maximumSignificantDigits: undefined
     });
 
-    this._resolvedOptions.minimumIntegerDigits =
+    this['[[MinimumIntegerDigits]]'] =
       GetNumberOption(options, 'minimumIntegerDigits', 1, 21, 1);
 
     const mnfd = GetNumberOption(options, 'minimumFractionDigits', 0, 20, 0);
-    this._resolvedOptions.minimumFractionDigits = mnfd;
+    this['[[MinimumFractionDigits]]'] = mnfd;
 
-    this._resolvedOptions.maximumFractionDigits =
+    this['[[MaximumFractionDigits]]'] =
       GetNumberOption(options,
                       'maximumFractionDigits', mnfd, 20, Math.max(mnfd, 3));
 
@@ -160,38 +202,16 @@ export class PluralRules extends BaseFormat {
         options['maximumSignificantDigits']) {
       const mnsd =
         GetNumberOption(options, 'minimumSignificantDigits', 1, 21, 1);
-      this._resolvedOptions.minimumSignificantDigits = mnsd;
+      this['[[MinimumSignificantDigits]]'] = mnsd;
         
-      this._resolvedOptions.maximumSignificantDigits =
+      this['[[MaximumSignificantDigits]]'] =
         GetNumberOption(options, 'maximumSignificantDigits', mnsd, 21, 1);
     }
   }
 
-  select(x) {
-    let n;
-    const nx = Number(x);
-
-    if (!isFinite(nx)) {
-      return 'other';
-    }
-
-    if (this._resolvedOptions.minimumSignificantDigits !== undefined &&
-        this._resolvedOptions.maximumSignificantDigits !== undefined) {
-      n = ToRawPrecision(nx,
-                         this._resolvedOptions.minimumSignificantDigits,
-                         this._resolvedOptions.maximumSignificantDigits);
-    } else {
-      n = ToRawFixed(nx,
-                     this._resolvedOptions.minimumIntegerDigits,
-                     this._resolvedOptions.minimumFractionDigits,
-                     this._resolvedOptions.maximumFractionDigits);
-    }
-
-    const pluralRuleFn = getPluralRule(
-      this._resolvedOptions.locale, this._resolvedOptions.type);
-
-    const {i, v, w, f, t} = getOperands(n);
-
-    return pluralRuleFn(n, i, v, w, f, t);
+  select(value) {
+    let pluralRules = this;
+    let n = Number(value);
+    return ResolvePlural(pluralRules, n);
   }
 }

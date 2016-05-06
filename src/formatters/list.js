@@ -96,16 +96,16 @@ export class ListFormat extends BaseFormat {
   }
 
   format(list) {
-    const type = this._resolvedOptions.type;
-    const style = this._resolvedOptions.style;
+    const type = this['[[Type]]'];
+    const style = this['[[Style]]'];
     return FormatToParts(type, style, list).then(parts => {
       return parts.reduce((string, part) => string + part.value, '');
     });
   }
 
   formatToParts(list) {
-    const type = this._resolvedOptions.type;
-    const style = this._resolvedOptions.style;
+    const type = this['[[Type]]'];
+    const style = this['[[Style]]'];
     return FormatToParts(type, style, list);
   }
 }

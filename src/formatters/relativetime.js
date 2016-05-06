@@ -77,16 +77,16 @@ export class RelativeTimeFormat extends BaseFormat {
   }
 
   format(x) {
-    const unit = this._resolvedOptions.unit;
-    const style = this._resolvedOptions.style;
+    const unit = this['[[Unit]]'];
+    const style = this['[[Style]]'];
     return FormatToParts(unit, style, x).then(parts => {
       return parts.reduce((string, part) => string + part.value, '');
     });
   }
 
   formatToParts(x) {
-    const unit = this._resolvedOptions.unit;
-    const style = this._resolvedOptions.style;
+    const unit = this['[[Unit]]'];
+    const style = this['[[Style]]'];
     return FormatToParts(unit, style, x);
   }
 }

@@ -95,22 +95,22 @@ export class DurationFormat extends BaseFormat {
       minimumIntegerDigits: 2
     });
 
-    this._maxUnitIdx = getDurationUnitIdx(this._resolvedOptions.maxUnit, 0);
-    this._minUnitIdx = getDurationUnitIdx(this._resolvedOptions.minUnit,
+    this._maxUnitIdx = getDurationUnitIdx(this['[[MaxUnit]]'], 0);
+    this._minUnitIdx = getDurationUnitIdx(this['[[MinUnit]]'],
       durationFormatOrder.length - 1);
   }
 
   format(input) {
-    const minUnit = this._resolvedOptions.minUnit;
-    const maxUnit = this._resolvedOptions.maxUnit;
+    const minUnit = this['[[MinUnit]]'];
+    const maxUnit = this['[[MaxUnit]]'];
     return FormatToParts.call(this, minUnit, maxUnit, input).then(parts => {
       return parts.reduce((string, part) => string + part.value, '');
     });
   }
 
   formatToParts(input) {
-    const minUnit = this._resolvedOptions.minUnit;
-    const maxUnit = this._resolvedOptions.maxUnit;
+    const minUnit = this['[[MinUnit]]'];
+    const maxUnit = this['[[MaxUnit]]'];
     return FormatToParts.call(this, minUnit, maxUnit, input);
   }
 }

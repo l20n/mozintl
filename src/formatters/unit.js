@@ -79,20 +79,21 @@ export class UnitFormat extends BaseFormat {
   constructor(locales, options) {
     super(locales, options, {
       unit: 'bestFit',
+      type: undefined,
       style: 'long'
     });
 
-    if (this._resolvedOptions.unit !== 'bestFit') {
-      this._resolvedOptions.type = getUnitFormatGroupName(
-        this._resolvedOptions.unit);
+    if (this['[[Unit]]'] !== 'bestFit') {
+      this['[[Type]]'] = getUnitFormatGroupName(
+        this['[[Unit]]']);
     }
 
-    if (this._resolvedOptions.type === undefined) {
+    if (this['[[Type]]'] === undefined) {
       throw new RangeError(`invalid value ${options.unit} for option unit`);
     }
 
-    if (!unitFormatGroups[this._resolvedOptions.type].styles.includes(
-          this._resolvedOptions.style)) {
+    if (!unitFormatGroups[this['[[Type]]']].styles.includes(
+          this['[[Style]]'])) {
       throw new RangeError(`invalid value ${options.style} for option style`);
     }
   }
@@ -101,17 +102,17 @@ export class UnitFormat extends BaseFormat {
     if (isNaN(parseInt(x))) {
       return Promise.resolve(undefined);
     }
-    const type = this._resolvedOptions.type;
+    const type = this['[[Type]]'];
     let unit, value;
-    if (this._resolvedOptions.unit === 'bestFit') {
+    if (this['[[Unit]]'] === 'bestFit') {
       const vals = selectUnit(type, x);
       unit = vals.unit;
       value = vals.value;
     } else {
-      unit = this._resolvedOptions.unit;
+      unit = this['[[Unit]]'];
       value = x;
     }
-    const style = this._resolvedOptions.style;
+    const style = this['[[Style]]'];
     const patternId = `unitformat-${type}-${unit}-${style}`;
 
     return FormatToParts(patternId, value).then(parts => {
