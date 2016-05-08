@@ -1,6 +1,6 @@
-import { computeTimeUnits,
-         getBestMatchUnit,
-         relativeTimeFormatId } from './formatters/relativetime';
+import { ComputeTimeUnits,
+         GetBestMatchUnit,
+         RelativeTimeFormatId } from './formatters/relativetime';
 
 const DAY_IN_S = 86400;
 const SECOND_IN_MS = 1000;
@@ -11,8 +11,8 @@ const DEFAULT_MAX_DIFF = DAY_IN_S * MAX_DAYS;
 export const gaia = {
   // This is an internal Firefox OS function, not part of the future standard
   relativePart: function(milliseconds) {
-    const units = computeTimeUnits(milliseconds);
-    const unit = getBestMatchUnit(units);
+    const units = ComputeTimeUnits(milliseconds);
+    const unit = GetBestMatchUnit(units);
     return {
       unit: unit + 's',
       value: Math.abs(units[unit])
@@ -46,7 +46,7 @@ export const gaia = {
         }
 
         const {patternId, value} =
-          relativeTimeFormatId(time,
+          RelativeTimeFormatId(time,
                                relativeFmtOptions.unit,
                                relativeFmtOptions.style);
 
@@ -68,7 +68,7 @@ export const gaia = {
         }
 
         const {patternId, value} =
-          relativeTimeFormatId(time,
+          RelativeTimeFormatId(time,
                                relativeFmtOptions.unit,
                                relativeFmtOptions.style);
 

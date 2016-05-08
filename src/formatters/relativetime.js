@@ -1,28 +1,34 @@
 import { BaseFormat} from './base';
 import { deconstructPattern } from '../utils';
 
-export function computeTimeUnits(v) {
+export function ComputeTimeUnits(v) {
   /*eslint no-magic-numbers: [0]*/
+  const DaysPerWeek = 7;
+  const HoursPerDay = 24;
+  const MinutesPerHour = 60;
+  const SecondsPerMinute = 60;
+  const msPerSecond = 1000;
+  const msPerMinute = msPerSecond * SecondsPerMinute;
+  const msPerHour = msPerMinute * MinutesPerHour;
+  const msPerDay = msPerHour * HoursPerDay;
+  const msPerWeek = msPerDay * DaysPerWeek;
+  const msPer400Years = msPerDay * 146097;
+
   const units = {};
-  const millisecond = Math.round(v);
-  const second = Math.round(millisecond / 1000);
-  const minute = Math.round(second / 60);
-  const hour = Math.round(minute / 60);
-  const day = Math.round(hour / 24);
-  const rawYear = day * 400 / 146097;
-  units.millisecond = millisecond;
-  units.second = second;
-  units.minute = minute;
-  units.hour = hour;
-  units.day = day;
-  units.week = Math.round(day / 7);
-  units.month = Math.round(rawYear * 12);
-  units.quarter = Math.round(rawYear * 4);
-  units.year = Math.round(rawYear);
+  const rawYear = v * 400 / msPer400Years;
+
+  units['[[Second]]'] = Math.round(v / msPerSecond);
+  units['[[Minute]]'] = Math.round(v / msPerMinute);
+  units['[[Hour]]'] = Math.round(v / msPerHour);
+  units['[[Day]]'] = Math.round(v / msPerDay);
+  units['[[Week]]'] = Math.round(v / msPerWeek);
+  units['[[Month]]'] = Math.round(rawYear * 12);
+  units['[[Quarter]]'] = Math.round(rawYear * 4);
+  units['[[Year]]'] = Math.round(rawYear);
   return units;
 }
 
-export function getBestMatchUnit(units) {
+export function GetBestMatchUnit(units) {
   /*eslint brace-style: [0]*/
   //if (Math.abs(units.second) < 45) { return 'second'; }
   if (Math.abs(units.minute) < 45) { return 'minute'; }
@@ -35,16 +41,18 @@ export function getBestMatchUnit(units) {
   return 'year';
 }
 
-export function relativeTimeFormatId(x, unit, style) {
+export function RelativeTimeFormatId(x, unit, style) {
   const ms = x - Date.now();
 
-  const units = computeTimeUnits(ms);
+  const units = ComputeTimeUnits(ms);
 
   if (unit === 'bestFit') {
-    unit = getBestMatchUnit(units);
+    unit = GetBestMatchUnit(units);
   }
 
-  const v = units[unit];
+  let unitKey = unit[0].toUpperCase() + unit.slice(1);
+
+  const v = units[`[[${unitKey}]]`];
 
   // CLDR uses past || future
   const tl = v < 0 ? '-ago' : '-until';
@@ -58,7 +66,7 @@ export function relativeTimeFormatId(x, unit, style) {
 }
 
 function FormatToParts(unit, style, x) {
-  const {patternId, value} = relativeTimeFormatId(x, unit, style);
+  const {patternId, value} = RelativeTimeFormatId(x, unit, style);
   return document.l10n.formatValue(patternId, {
     value
   }).then(pattern => {
